@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +13,16 @@
     "axios": "^1.7.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "rollup": "^4.28.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "typescript": "^5.7.2"
   }
 }
