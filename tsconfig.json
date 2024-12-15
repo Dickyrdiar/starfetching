@@ -8,18 +8,18 @@
     ],
     "jsx": "react-jsx",
     "declaration": true,
-    "declarationDir": "src/types",
-    "outDir": "src",
+    "declarationDir": "./dist/types",
+    "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "Node"
   },
   "include": [
-    "src"
+    "dist"
   ],
   "exclude": [
     "node_modules",
-    "src"
+    "dist"
   ]
 }
