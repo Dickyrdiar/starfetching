@@ -1,5 +1,8 @@
-import  WrapingComponent  from './Wrapping'
+import  WrapingComponent, { useApiContext }  from './Wrapping'
+import { useFetch } from './startFetching/useFetch'
 
 export {
-  WrapingComponent
+  WrapingComponent,
+  useApiContext,
+  useFetch  
 }
