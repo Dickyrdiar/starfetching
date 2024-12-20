@@ -1,8 +1,10 @@
-import  WrapingComponent, { useApiContext }  from './Wrapping'
+import WrappingComponent, { useApiContext } from './Wrapping'; 
 import { useFetch } from './startFetching/useFetch'
+import { startFetchingIf } from './startFetching/useFetchIf'
 
 export {
-  WrapingComponent,
+  WrappingComponent,
   useApiContext,
-  useFetch  
+  useFetch,
+  startFetchingIf
 }
