@@ -1,16 +1,16 @@
 import { renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
-import { useFetchIf } from '../startFetching/useFetchIf'; // <-- Add semicolon here
+import { useFetch } from '../startFetching/useFetch';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('useFetchIf', () => {
+describe('useFetch', () => {
   it('should fetch data successfully', async () => {
     const mockData = { message: 'Hello, world!' };
     mockedAxios.request.mockResolvedValueOnce({ data: mockData });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://api.example.com/data', 'GET', null, true));
+    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://api.example.com/data', 'GET', null));
 
     await waitForNextUpdate();
 
@@ -23,7 +23,7 @@ describe('useFetchIf', () => {
     const mockError = new Error('Network Error');
     mockedAxios.request.mockRejectedValueOnce(mockError);
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://api.example.com/data', 'GET', null, true));
+    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://api.example.com/data', 'GET', null));
 
     await waitForNextUpdate();
 

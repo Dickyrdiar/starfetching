@@ -1,28 +1,46 @@
 import { useEffect, useState } from "react"
-import { useFethResult } from "../types/userStatrtFetchResult";
 import axios from "axios";
+import instance from "../instance";
+import createAxiosInstance from "../instance";
 
-export const useFetch = <T, >(url: string): useFethResult<T> => {
-  const [data, setData] = useState<T | null>(null);
+export const useFetch = <T, >(url: string, method: string | undefined, body: any)=> {
+  const [response, setResponse] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMouhted = true;
+    let cancel: () => void;
+
     setLoading(true);
 
     const fetchData = async () => {
       try {
-        const response = await axios.get<T>(url);
-        setData(response.data);
+        setLoading(true);
+        const axiosInstance = createAxiosInstance(url);
+        const response = await axiosInstance.request<T>({ 
+          url,
+          method,
+          data: body,
+          cancelToken: new axios.CancelToken(c => {
+            cancel = c;
+          }),
+        });
+        setResponse(response.data);
       } catch (error: any) {
         setError(error.message);
       } finally {
         setLoading(false);
       }
     }
-    fetchData();
-  }, [url]);
+    isMouhted && fetchData();
 
-  return { data, loading, error };
+    return () => { 
+      isMouhted = false;
+      cancel();
+    }
+  }, [url, method, body]);
+
+  return { response, loading, error };
 
 }
