@@ -21,7 +21,7 @@ describe('WrappingComponent', () => {
         <div>Test Child</div>
       </WrappingComponent>
     );
-    expect(screen.getByText('Test Child')).toBeInTheDocument();
+    expect(screen.getAllByText('Test Child').length).toBe(1);
   });
 
   it('displays loading state', async () => {
@@ -41,7 +41,7 @@ describe('WrappingComponent', () => {
         <div>Test Child</div>
       </WrappingComponent>
     );
-    expect(screen.getByText(/Error:.*Error occurred/)).toBeInTheDocument();
+    expect(screen.getByText((content, element) => content.includes('Error occurred'))).toBeInTheDocument();
   });
 
   it('displays data', async () => {

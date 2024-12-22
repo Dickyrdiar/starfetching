@@ -45,7 +45,7 @@ const WrappingComponent: React.FC<WrappingProps> = ({ children }) => {
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error}</div>}
       {data && <pre>{JSON.stringify(data, null, 2)}</pre>}
-      {!loading && !error && !data && children}
+      {children}
     </div>
   )
 }
