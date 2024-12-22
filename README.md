@@ -65,6 +65,68 @@ const YourComponent = () => {
 export default YourComponent;
 ```
 
+### useFetchIf Hook
+
+The `useFetchIf` hook allows you to conditionally fetch data based on a condition.
+
+```tsx
+import React from 'react';
+import { useFetchIf } from 'startfetch';
+
+const ConditionalComponent = () => {
+  const { data, loading, error, startFetchingIf } = useFetchIf();
+
+  React.useEffect(() => {
+    startFetchingIf('https://api.example.com/data', true);
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+
+export default ConditionalComponent;
+```
+
+### useFetchIf with Button Condition
+
+The `useFetchIf` hook can also be used with a button to conditionally fetch data.
+
+```tsx
+import React, { useState } from 'react';
+import { useFetchIf } from 'startfetch';
+
+const ButtonConditionalComponent = () => {
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const { data, loading, error, startFetchingIf } = useFetchIf();
+
+  const handleClick = () => {
+    setShouldFetch(true);
+  };
+
+  React.useEffect(() => {
+    startFetchingIf('https://api.example.com/data', shouldFetch);
+  }, [shouldFetch]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <button onClick={handleClick}>Fetch Data</button>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+
+export default ButtonConditionalComponent;
+```
+
 ## API
 
 ### WrappingComponent Props
@@ -81,6 +143,15 @@ The `useApiContext` hook provides the following values:
 - `startFetching(url: string)`: A function to start fetching data from the given URL.
 - `startFetchingIf(url: string, condition: boolean)`: A function to start fetching data from the given URL if the condition is true.
 
+### useFetchIf Hook
 
- ## License
+The `useFetchIf` hook provides the following values:
+
+- `data`: The data fetched from the API.
+- `loading`: A boolean indicating if the data is currently being fetched.
+- `error`: An error message if the fetch failed.
+- `startFetchingIf(url: string, condition: boolean)`: A function to start fetching data from the given URL if the condition is true.
+
+## License
+
 This project is licensed under the MIT License.

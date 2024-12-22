@@ -10,7 +10,7 @@ describe('useFetch', () => {
     const mockData = { message: 'Hello, world!' };
     mockedAxios.request.mockResolvedValueOnce({ data: mockData });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://api.example.com/data', 'GET', null));
+    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://swapi.dev/api/people/1/', 'GET', null));
 
     await waitForNextUpdate();
 
@@ -23,7 +23,7 @@ describe('useFetch', () => {
     const mockError = new Error('Network Error');
     mockedAxios.request.mockRejectedValueOnce(mockError);
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://api.example.com/data', 'GET', null));
+    const { result, waitForNextUpdate } = renderHook(() => useFetch('https://swapi.dev/api/people/1/', 'GET', null));
 
     await waitForNextUpdate();
 

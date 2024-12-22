@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react-hooks';
 import axios from 'axios';
 import { useFetchIf } from '../startFetching/useFetchIf'; // <-- Add semicolon here
 
@@ -10,8 +11,10 @@ describe('useFetchIf', () => {
     const mockData = { message: 'Hello, world!' };
     mockedAxios.request.mockResolvedValueOnce({ data: mockData });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://api.example.com/data', 'GET', null, true));
-
+    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://swapi.dev/api/people/1/', 'GET', null, true));
+    await act(async () => {
+      await waitForNextUpdate();
+    });
     await waitForNextUpdate();
 
     expect(result.current.loading).toBe(false);
@@ -23,7 +26,7 @@ describe('useFetchIf', () => {
     const mockError = new Error('Network Error');
     mockedAxios.request.mockRejectedValueOnce(mockError);
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://api.example.com/data', 'GET', null, true));
+    const { result, waitForNextUpdate } = renderHook(() => useFetchIf('https://swapi.dev/api/people/1/', 'GET', null, true));
 
     await waitForNextUpdate();
 
