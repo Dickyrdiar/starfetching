@@ -20,15 +20,24 @@ const WrappingComponent: React.FC<WrappingProps> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startFetching = async (url: string, method: string | undefined, body: any) => {
-    const { response, loading, error } = useFetch(url, method, body);
+  const startFetching = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any) => {
+    const { response, loading, error } = useFetch(
+      urlRequest,
+      methodRequest,
+      bodyRequest
+    );
     setData(response);
     setLoading(loading);
     setError(error);
   }
 
-  const startFetchingIf = async (url: string, method: string | undefined, body: any, startFetching?: boolean) => {
-    const { response, loading, error, startFetching: startFetch } = useFetchIf(url, method, body, !!startFetching);
+  const startFetchingIf = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any, startFetchingReq?: boolean) => {
+    const { response, loading, error, startFetching: startFetch } = useFetchIf(
+      urlRequest,
+      methodRequest,
+      bodyRequest,
+      !!startFetchingReq
+    );
     if (startFetch) {
       setData(response);
       setLoading(loading);
