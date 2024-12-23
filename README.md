@@ -37,16 +37,16 @@ const App = () => (
 export default App;
 ```
 
-### useApiContext Hook
+### useFetch Hook
 
-The `useApiContext` hook allows you to access the API context within your components.
+The `useFetch` hook allows you to access the API context within your components.
 
 ```tsx
 import React from 'react';
-import { useApiContext } from 'startfetch';
+import { useFetch } from 'startfetch';
 
 const YourComponent = () => {
-  const { data, loading, error, startFetching, startFetchingIf } = useApiContext();
+  const { data, loading, error } = useFetch();
 
   React.useEffect(() => {
     startFetching('https://api.example.com/data');
@@ -127,6 +127,35 @@ const ButtonConditionalComponent = () => {
 export default ButtonConditionalComponent;
 ```
 
+### useFetchIf with Request Body
+
+The `useFetchIf` hook can also be used to conditionally fetch data with a request body.
+
+```tsx
+import React from 'react';
+import { useFetchIf } from 'startfetch';
+
+const RequestBodyComponent = () => {
+  const { data, loading, error, startFetchingIf } = useFetchIf();
+
+  React.useEffect(() => {
+    const requestBody = { key: 'value' };
+    startFetchingIf('https://api.example.com/data', true, requestBody);
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+
+export default RequestBodyComponent;
+```
+
 ## API
 
 ### WrappingComponent Props
@@ -135,13 +164,11 @@ export default ButtonConditionalComponent;
 
 ### API Context Hook
 
-The `useApiContext` hook provides the following values:
+The `useFetch` hook provides the following values:
 
 - `data`: The data fetched from the API.
 - `loading`: A boolean indicating if the data is currently being fetched.
 - `error`: An error message if the fetch failed.
-- `startFetching(url: string)`: A function to start fetching data from the given URL.
-- `startFetchingIf(url: string, condition: boolean)`: A function to start fetching data from the given URL if the condition is true.
 
 ### useFetchIf Hook
 
@@ -150,7 +177,7 @@ The `useFetchIf` hook provides the following values:
 - `data`: The data fetched from the API.
 - `loading`: A boolean indicating if the data is currently being fetched.
 - `error`: An error message if the fetch failed.
-- `startFetchingIf(url: string, condition: boolean)`: A function to start fetching data from the given URL if the condition is true.
+- `startFetchingIf(url: string, condition: boolean, body?: object)`: A function to start fetching data from the given URL if the condition is true. Optionally, a request body can be provided.
 
 ## License
 

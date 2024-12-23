@@ -1,8 +1,10 @@
 {
   "name": "startfetch",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.2.5",
+  "description": "A React library for managing API calls and their states",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rollup -c",
@@ -13,7 +15,6 @@
   "files": [
     "dist"
   ],
-
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "axios": "^1.7.9",
@@ -22,6 +23,13 @@
   },
   "jest": {
     "testEnvironment": "jsdom"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "devDependencies": {
     "@babel/preset-react": "^7.26.3",
