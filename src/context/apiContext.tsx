@@ -3,6 +3,8 @@ import { apiContextProps } from "../types/apiContextProps";
 import { useFetch } from "../startFetching/useFetch";
 import { useFetchIf } from "../startFetching/useFetchIf";
 
+
+
 const ApiContainer = createContext<apiContextProps | undefined>(undefined);
 
 export const useApiContainer = () => {
@@ -18,10 +20,10 @@ export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const startFetching = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any) => {
+  const startFetching = async (urlRequest: string, methodRequest: string | undefined , bodyRequest: any) => {
     const { response, loading, error } = useFetch(
       urlRequest,
-      methodRequest,
+      methodRequest ,
       bodyRequest
     );
     setData(response);
@@ -32,7 +34,7 @@ export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const startFetchingIf = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any, startFetchingReq?: boolean) => {
     const { response, loading, error, startFetching: startFetch } = useFetchIf(
       urlRequest,
-      methodRequest,
+      methodRequest as string,
       bodyRequest,
       !!startFetchingReq
     );
