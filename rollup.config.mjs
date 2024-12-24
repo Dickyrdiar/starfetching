@@ -2,12 +2,11 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import typescript from 'rollup-plugin-typescript2';
-import pkg from './package.json' assert { type: 'json' };
 import json from '@rollup/plugin-json';
-import ts from '@rollup/plugin-typescript';
+import pkg from './package.json' assert { type: 'json' };
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/index.ts', // Entry file
   output: [
     {
       file: pkg.main,
@@ -24,9 +23,11 @@ export default {
     peerDepsExternal(),
     resolve(),
     commonjs(),
-    typescript({ useTsconfigDeclarationDir: true }),
+    typescript({
+      tsconfig: './tsconfig.json',
+      useTsconfigDeclarationDir: true,
+    }),
     json(),
-    ts()
   ],
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'axios'], // Ensure axios is marked as external
 };

@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { ApiProvider } from "./context/apiContext";
 import { WrappingComponentProps } from "./types/Wrapping";
 
-const WrappingComponent = ({ children }: WrappingComponentProps) => {
+const WrappingComponent: React.FC<WrappingComponentProps> = ({ children }) => {
   return (
     <div className="wrapping-component">
       <ApiProvider>
