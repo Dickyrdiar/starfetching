@@ -1,8 +1,8 @@
 {
   "name": "startfetch",
-  "version": "1.2.5",
+  "version": "2.2.5",
   "description": "A React library for managing API calls and their states",
-  "main": "dist/index.js",
+  "main": "index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -43,11 +43,16 @@
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "babel-loader": "^8.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "rollup": "^4.29.1",
     "rollup-plugin-dts": "^6.1.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-typescript2": "^0.36.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.0.0"
   }
 }

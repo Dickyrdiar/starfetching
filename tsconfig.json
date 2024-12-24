@@ -6,19 +6,22 @@
       "DOM",
       "ESNext"
     ],
-    "jsx": "react-jsx",
+    "jsx": "react",
     "declaration": true,
     "declarationDir": "./dist/types",
     "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "emitDeclarationOnly": true
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

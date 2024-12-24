@@ -1,3 +1,5 @@
-export interface WrappingProps {
-  children: React.ReactNode
+import React from "react";
+
+export interface WrappingComponentProps {
+  children: React.ReactNode;
 }

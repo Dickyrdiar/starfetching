@@ -7,7 +7,8 @@ import '@testing-library/jest-dom';
 /**
  * @jest-environment jsdom
  */
-import WrappingComponent, { useApiContainer } from '../Wrapping';
+import WrappingComponent from '../Wrapping';
+import useApiContainer from '../Wrapping';
 import { useFetch } from '../startFetching/useFetch';
 import { useFetchIf } from '../startFetching/useFetchIf';
 
@@ -57,7 +58,7 @@ describe('WrappingComponent', () => {
 
   it('throws error when useApiContainer is used outside ApiProvider', () => {
     const TestComponent = () => {
-      useApiContainer();
+      useApiContainer({ children: <div>Test</div> });
       return <div>Test</div>;
     };
     expect(() => render(<TestComponent />)).toThrow('useApiContext must be used within a ApiProvider');
