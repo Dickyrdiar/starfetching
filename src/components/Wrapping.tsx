@@ -4,9 +4,11 @@ import { WrappingComponentProps } from "../types/Wrapping";
 
 const WrappingComponent: React.FC<WrappingComponentProps> = ({ children }) => {
   return (
-    <ApiProvider>
-      {children}
-    </ApiProvider>
+    <div className='wrapping-component'>
+      <ApiProvider>
+        {children}
+      </ApiProvider>
+    </div>
   );
 }
 

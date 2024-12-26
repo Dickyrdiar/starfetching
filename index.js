@@ -129,13 +129,6 @@ const useFetchIf = (url, method, body, startFetching) => {
 };
 
 const ApiContainer = React.createContext(undefined);
-const useApiContainer = () => {
-    const context = React.useContext(ApiContainer);
-    if (!context) {
-        throw new Error('useApiContext must be used within a ApiProvider');
-    }
-    return context;
-};
 const ApiProvider = ({ children }) => {
     const [data, setData] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
@@ -164,17 +157,17 @@ const ApiProvider = ({ children }) => {
 };
 
 const WrappingComponent = ({ children }) => {
-    return (React.createElement(ApiProvider, null, children));
+    return (React.createElement("div", { className: 'wrapping-component' },
+        React.createElement(ApiProvider, null, children)));
 };
 
 // export { default as WrappingComponent } from './Wrapping';
 // Ensure all imports are correctly defined and exported
-var index = {
+const library = {
     useFetch,
-    useApiContainer,
     useFetchIf,
     WrappingComponent
 };
 
-module.exports = index;
+module.exports = library;
 //# sourceMappingURL=index.js.map
