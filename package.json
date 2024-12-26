@@ -1,7 +1,7 @@
 {
   "name": "startfetch",
-  "version": "3.2.7",
-  "description": "A React library for managing API calls and their states",
+  "version": "4.3.9",
+  "description": "A React library for fethcing API calls and their states",
   "main": "index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",

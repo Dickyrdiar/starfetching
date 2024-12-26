@@ -27,6 +27,8 @@ The `WrappingComponent` is a context provider that wraps your application or com
 ```tsx
 import React from 'react';
 import WrappingComponent from 'startfetch';
+import startfetch from 'startfetch'
+const { WrapingCompponent } = startFetch
 
 const App = () => (
   <WrappingComponent>
@@ -43,9 +45,10 @@ The `useFetch` hook allows you to access the API context within your components.
 
 ```tsx
 import React from 'react';
-import { useFetch } from 'startfetch';
+import startfetch from 'startfetch'
 
 const YourComponent = () => {
+  const { useFetch } = startFetch
   const { data, loading, error } = useFetch();
 
   React.useEffect(() => {
@@ -71,9 +74,10 @@ The `useFetchIf` hook allows you to conditionally fetch data based on a conditio
 
 ```tsx
 import React from 'react';
-import { useFetchIf } from 'startfetch';
+import startfetch from 'startfetch'
 
 const ConditionalComponent = () => {
+  const { useFetchIf } = startFetch
   const { data, loading, error, startFetchingIf } = useFetchIf();
 
   React.useEffect(() => {
@@ -99,10 +103,11 @@ The `useFetchIf` hook can also be used with a button to conditionally fetch data
 
 ```tsx
 import React, { useState } from 'react';
-import { useFetchIf } from 'startfetch';
+import startfetch from 'startfetch'
 
 const ButtonConditionalComponent = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
+  const { useFetchIf } = startFetch
   const { data, loading, error, startFetchingIf } = useFetchIf();
 
   const handleClick = () => {
@@ -133,9 +138,10 @@ The `useFetchIf` hook can also be used to conditionally fetch data with a reques
 
 ```tsx
 import React from 'react';
-import { useFetchIf } from 'startfetch';
+import startfetch from 'startfetch';
 
 const RequestBodyComponent = () => {
+  const { useFetchIf } = startfetch
   const { data, loading, error, startFetchingIf } = useFetchIf();
 
   React.useEffect(() => {

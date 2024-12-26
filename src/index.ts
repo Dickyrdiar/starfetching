@@ -1,13 +1,13 @@
 // export { default as WrappingComponent } from './Wrapping';
 import { useFetch } from './startFetching/useFetch';
 import { useFetchIf } from './startFetching/useFetchIf';
-import { useApiContainer } from '../src/context/apiContext';
-import WrappingComponent  from './components/Wrapping';
+import { default as  WrappingComponent}  from './components/Wrapping';
 
 // Ensure all imports are correctly defined and exported
-export default {
+const library = {
   useFetch,
-  useApiContainer,
   useFetchIf,
   WrappingComponent
-};
+}
+
+export default library;
