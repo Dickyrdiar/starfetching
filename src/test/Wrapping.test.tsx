@@ -7,8 +7,8 @@ import '@testing-library/jest-dom';
 /**
  * @jest-environment jsdom
  */
-import WrappingComponent from '../Wrapping';
-import useApiContainer from '../Wrapping';
+import WrappingComponent from '../components/Wrapping';
+import useApiContainer from '../components/Wrapping';
 import { useFetch } from '../startFetching/useFetch';
 import { useFetchIf } from '../startFetching/useFetchIf';
 

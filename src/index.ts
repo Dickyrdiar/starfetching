@@ -2,7 +2,7 @@
 import { useFetch } from './startFetching/useFetch';
 import { useFetchIf } from './startFetching/useFetchIf';
 import { useApiContainer } from '../src/context/apiContext';
-import WrappingComponent from './Wrapping';
+import WrappingComponent  from './components/Wrapping';
 
 // Ensure all imports are correctly defined and exported
 export default {
