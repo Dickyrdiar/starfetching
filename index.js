@@ -164,8 +164,7 @@ const ApiProvider = ({ children }) => {
 };
 
 const WrappingComponent = ({ children }) => {
-    return (React.createElement("div", { className: "wrapping-component" },
-        React.createElement(ApiProvider, null, children)));
+    return (React.createElement(ApiProvider, null, children));
 };
 
 // export { default as WrappingComponent } from './Wrapping';
