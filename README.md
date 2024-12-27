@@ -26,9 +26,7 @@ The `WrappingComponent` is a context provider that wraps your application or com
 
 ```tsx
 import React from 'react';
-import WrappingComponent from 'startfetch';
-import startfetch from 'startfetch'
-const { WrapingCompponent } = startFetch
+import { WrappingComponent } from 'startfetch';
 
 const App = () => (
   <WrappingComponent>
@@ -45,19 +43,17 @@ The `useFetch` hook allows you to access the API context within your components.
 
 ```tsx
 import React from 'react';
-import startfetch from 'startfetch'
+import { useFetch } from 'startfetch';
 
 const YourComponent = () => {
-  const { useFetch } = startFetch
-   const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
-
+  const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
   );
 };
@@ -71,19 +67,17 @@ The `useFetchIf` hook allows you to conditionally fetch data based on a conditio
 
 ```tsx
 import React from 'react';
-import startfetch from 'startfetch'
+import { useFetchIf } from 'startfetch';
 
 const ConditionalComponent = () => {
-  const { useFetchIf } = startFetch
-   const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
-
+  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET', true);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
   );
 };
@@ -97,17 +91,15 @@ The `useFetchIf` hook can also be used with a button to conditionally fetch data
 
 ```tsx
 import React, { useState } from 'react';
-import startfetch from 'startfetch'
+import { useFetchIf } from 'startfetch';
 
 const ButtonConditionalComponent = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
-  const { useFetchIf } = startFetch
   const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET', shouldFetch);
 
   const handleClick = () => {
     setShouldFetch(true);
   };
-
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -115,7 +107,7 @@ const ButtonConditionalComponent = () => {
   return (
     <div>
       <button onClick={handleClick}>Fetch Data</button>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
   );
 };
@@ -129,20 +121,17 @@ The `useFetchIf` hook can also be used to conditionally fetch data with a reques
 
 ```tsx
 import React from 'react';
-import startfetch from 'startfetch';
+import { useFetchIf } from 'startfetch';
 
 const RequestBodyComponent = () => {
-  const { useFetchIf } = startfetch
- const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET');
-
- 
+  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET');
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
   );
 };
@@ -160,7 +149,7 @@ export default RequestBodyComponent;
 
 The `useFetch` hook provides the following values:
 
-- `data`: The data fetched from the API.
+- `response`: The data fetched from the API.
 - `loading`: A boolean indicating if the data is currently being fetched.
 - `error`: An error message if the fetch failed.
 
@@ -168,7 +157,7 @@ The `useFetch` hook provides the following values:
 
 The `useFetchIf` hook provides the following values:
 
-- `data`: The data fetched from the API.
+- `response`: The data fetched from the API.
 - `loading`: A boolean indicating if the data is currently being fetched.
 - `error`: An error message if the fetch failed.
 - `startFetchingIf(url: string, condition: boolean, body?: object)`: A function to start fetching data from the given URL if the condition is true. Optionally, a request body can be provided.
