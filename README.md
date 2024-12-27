@@ -61,6 +61,10 @@ const YourComponent = () => {
 export default YourComponent;
 ```
 
+# StartFetch Library
+
+[Previous sections remain unchanged...]
+
 ### useFetchIf Hook
 
 The `useFetchIf` hook allows you to conditionally fetch data based on a condition. Here are examples for different HTTP methods:
@@ -72,15 +76,16 @@ import React, { useState } from 'react';
 import { useFetchIf } from 'startfetch';
 
 const GetComponent = () => {
-  const [shouldFetch, setShouldFetch] = useState(false);
+  const [startFetching, setStartFetching] = useState(false);
   const { response, loading, error } = useFetchIf(
-    'https://api.example.com/data',
-    'GET',
-    shouldFetch
+    "https://sw-api.starnavi.io/planets",
+    "GET",
+    null,
+    startFetching
   );
 
   const handleClick = () => {
-    setShouldFetch(true);
+    setStartFetching(true);
   };
 
   if (loading) return <div>Loading...</div>;

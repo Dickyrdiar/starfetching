@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { AxiosRequestConfig, CancelTokenSource} from "axios";
 import createAxiosInstance from "../instance";
 
 export const useFetchIf = <T, >(url: string, method: string | undefined, body: any, startFetching: boolean) => {
@@ -8,25 +8,30 @@ export const useFetchIf = <T, >(url: string, method: string | undefined, body: a
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounthed = true;
+    let cancelTokenSource: CancelTokenSource;
+
     if (startFetching) {
       setLoading(true);
 
       const fetchData = async () => {
         try {
           const axiosInstace = createAxiosInstance(url);
-          const result = await axiosInstace.request<T>({
+          cancelTokenSource = axios.CancelToken.source();
+          
+          const config: AxiosRequestConfig = { 
             url,
             method,
             data: body,
-            cancelToken: new axios.CancelToken(c => {
-              // cancel = c;
-            })
-          });
+            cancelToken: cancelTokenSource.token,
+          }
+
+          const result = await axiosInstace.request<T>(config);
           setResponse(result.data);
         } catch (error: any) {
           setError(error.message);
         } finally {
-          setLoading(false);
+          if (isMounthed) setLoading(false);
         }
       };
 
