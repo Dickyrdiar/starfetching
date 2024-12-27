@@ -46,7 +46,7 @@ import React from 'react';
 import { useFetch } from 'startfetch';
 
 const YourComponent = () => {
-  const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
+  const { response, loading, error } = useFetch('https://api.example.com/data', 'GET');
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -63,39 +63,21 @@ export default YourComponent;
 
 ### useFetchIf Hook
 
-The `useFetchIf` hook allows you to conditionally fetch data based on a condition.
+The `useFetchIf` hook allows you to conditionally fetch data based on a condition. Here are examples for different HTTP methods:
 
-```tsx
-import React from 'react';
-import { useFetchIf } from 'startfetch';
-
-const ConditionalComponent = () => {
-  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET', true);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
-  return (
-    <div>
-      <pre>{JSON.stringify(response, null, 2)}</pre>
-    </div>
-  );
-};
-
-export default ConditionalComponent;
-```
-
-### useFetchIf with Button Condition
-
-The `useFetchIf` hook can also be used with a button to conditionally fetch data.
+#### GET Request
 
 ```tsx
 import React, { useState } from 'react';
 import { useFetchIf } from 'startfetch';
 
-const ButtonConditionalComponent = () => {
+const GetComponent = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
-  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET', shouldFetch);
+  const { response, loading, error } = useFetchIf(
+    'https://api.example.com/data',
+    'GET',
+    shouldFetch
+  );
 
   const handleClick = () => {
     setShouldFetch(true);
@@ -111,32 +93,110 @@ const ButtonConditionalComponent = () => {
     </div>
   );
 };
-
-export default ButtonConditionalComponent;
 ```
 
-### useFetchIf with Request Body
-
-The `useFetchIf` hook can also be used to conditionally fetch data with a request body.
+#### POST Request
 
 ```tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useFetchIf } from 'startfetch';
 
-const RequestBodyComponent = () => {
-  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET');
+const PostComponent = () => {
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const requestBody = {
+    title: 'New Item',
+    description: 'Description here'
+  };
+
+  const { response, loading, error } = useFetchIf(
+    'https://api.example.com/items',
+    'POST',
+    shouldFetch,
+    requestBody
+  );
+
+  const handleSubmit = () => {
+    setShouldFetch(true);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <pre>{JSON.stringify(response, null, 2)}</pre>
+      <button onClick={handleSubmit}>Create Item</button>
+      {response && <div>Successfully created!</div>}
     </div>
   );
 };
+```
 
-export default RequestBodyComponent;
+#### PUT Request
+
+```tsx
+import React, { useState } from 'react';
+import { useFetchIf } from 'startfetch';
+
+const PutComponent = () => {
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const requestBody = {
+    id: 1,
+    title: 'Updated Item',
+    description: 'Updated description'
+  };
+
+  const { response, loading, error } = useFetchIf(
+    'https://api.example.com/items/1',
+    'PUT',
+    shouldFetch,
+    requestBody
+  );
+
+  const handleUpdate = () => {
+    setShouldFetch(true);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <button onClick={handleUpdate}>Update Item</button>
+      {response && <div>Successfully updated!</div>}
+    </div>
+  );
+};
+```
+
+#### DELETE Request
+
+```tsx
+import React, { useState } from 'react';
+import { useFetchIf } from 'startfetch';
+
+const DeleteComponent = () => {
+  const [shouldFetch, setShouldFetch] = useState(false);
+  
+  const { response, loading, error } = useFetchIf(
+    'https://api.example.com/items/1',
+    'DELETE',
+    shouldFetch
+  );
+
+  const handleDelete = () => {
+    setShouldFetch(true);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <div>
+      <button onClick={handleDelete}>Delete Item</button>
+      {response && <div>Successfully deleted!</div>}
+    </div>
+  );
+};
 ```
 
 ## API
@@ -145,22 +205,22 @@ export default RequestBodyComponent;
 
 - `children`: The components that will have access to the API context.
 
-### API Context Hook
+### Hook Return Values
 
-The `useFetch` hook provides the following values:
+Both `useFetch` and `useFetchIf` hooks provide the following values:
 
-- `response`: The data fetched from the API.
-- `loading`: A boolean indicating if the data is currently being fetched.
-- `error`: An error message if the fetch failed.
+- `response`: The data received from the API.
+- `loading`: A boolean indicating if the request is currently in progress.
+- `error`: An error message if the request failed.
 
-### useFetchIf Hook
+### useFetchIf Parameters
 
-The `useFetchIf` hook provides the following values:
+The `useFetchIf` hook accepts the following parameters:
 
-- `response`: The data fetched from the API.
-- `loading`: A boolean indicating if the data is currently being fetched.
-- `error`: An error message if the fetch failed.
-- `startFetchingIf(url: string, condition: boolean, body?: object)`: A function to start fetching data from the given URL if the condition is true. Optionally, a request body can be provided.
+- `url` (string): The API endpoint URL
+- `method` (string): The HTTP method ('GET', 'POST', 'PUT', 'DELETE')
+- `condition` (boolean): Whether to execute the request
+- `body` (optional object): The request body for POST and PUT requests
 
 ## License
 
