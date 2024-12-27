@@ -31,7 +31,7 @@ export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setError(error);
   };
 
-  const startFetchingIf = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any, startFetchingReq?: boolean) => {
+  const startFetchingIf = async (urlRequest: string, methodRequest: string | undefined, bodyRequest: any, startFetchingReq: boolean | undefined) => {
     const { response, loading, error, startFetching: startFetch } = useFetchIf(
       urlRequest,
       methodRequest as string,

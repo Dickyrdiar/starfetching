@@ -3,6 +3,8 @@ import { useFetch } from './startFetching/useFetch';
 import { useFetchIf } from './startFetching/useFetchIf';
 import { default as  WrappingComponent}  from './components/Wrapping';
 
+export { useFetch, useFetchIf, WrappingComponent };
+
 // Ensure all imports are correctly defined and exported
 const library = {
   useFetch,
