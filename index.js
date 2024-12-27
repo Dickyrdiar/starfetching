@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var React = require('react');
 var axios = require('axios');
 
@@ -169,5 +171,8 @@ const library = {
     WrappingComponent
 };
 
-module.exports = library;
+exports.WrappingComponent = WrappingComponent;
+exports.default = library;
+exports.useFetch = useFetch;
+exports.useFetchIf = useFetchIf;
 //# sourceMappingURL=index.js.map

@@ -49,11 +49,8 @@ import startfetch from 'startfetch'
 
 const YourComponent = () => {
   const { useFetch } = startFetch
-  const { data, loading, error } = useFetch();
+   const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
 
-  React.useEffect(() => {
-    startFetching('https://api.example.com/data');
-  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -78,11 +75,8 @@ import startfetch from 'startfetch'
 
 const ConditionalComponent = () => {
   const { useFetchIf } = startFetch
-  const { data, loading, error, startFetchingIf } = useFetchIf();
+   const { response, loading, error } = useFetch('https://swapi.py4e.com/api/planets', 'GET');
 
-  React.useEffect(() => {
-    startFetchingIf('https://api.example.com/data', true);
-  }, []);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -108,15 +102,12 @@ import startfetch from 'startfetch'
 const ButtonConditionalComponent = () => {
   const [shouldFetch, setShouldFetch] = useState(false);
   const { useFetchIf } = startFetch
-  const { data, loading, error, startFetchingIf } = useFetchIf();
+  const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET', shouldFetch);
 
   const handleClick = () => {
     setShouldFetch(true);
   };
 
-  React.useEffect(() => {
-    startFetchingIf('https://api.example.com/data', shouldFetch);
-  }, [shouldFetch]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -142,12 +133,9 @@ import startfetch from 'startfetch';
 
 const RequestBodyComponent = () => {
   const { useFetchIf } = startfetch
-  const { data, loading, error, startFetchingIf } = useFetchIf();
+ const { response, loading, error } = useFetchIf('https://swapi.py4e.com/api/planets', 'GET');
 
-  React.useEffect(() => {
-    const requestBody = { key: 'value' };
-    startFetchingIf('https://api.example.com/data', true, requestBody);
-  }, []);
+ 
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
