@@ -1,19 +1,22 @@
-/* eslint-disable react/jsx-key */
+ 
 /* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-// import { useFetch } from 'startfetch'
-import { useFetch } from 'startfetch'
+import { useFetchIf } from '../../..'
 
 function App() {
   const [count, setCount] = useState(0)
   const [startFethching, setStartFetching] = useState(false)
-  const { response, loading, error } = useFetch(
+  const { response, loading, error } = useFetchIf(
     "https://sw-api.starnavi.io/planets", 
     "GET",
+    null,
+    startFethching,
   )
+
+  console.log("response", response)
 
   return (
     <>
@@ -31,13 +34,13 @@ function App() {
             </div>
             <h1>Vite + React</h1>
             <div className="card">
-              {/* {response} */}
-              {response?.results?.map((val) => (
-                <p>{val.name}</p>
-              ))}
+             <button onClick={() => setStartFetching(true)}>click this</button>
             </div>
+
             <p className="read-the-docs">
-              Click on the Vite and React logos to learn more
+             {response?.results?.map((val) => (
+              <p key={val.id}>{val.name}</p>
+             ))}
             </p>
         </div>
       )}

@@ -102,19 +102,20 @@ const useFetchIf = (url, method, body, startFetching) => {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     React.useEffect(() => {
+        let cancelTokenSource;
         if (startFetching) {
             setLoading(true);
             const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
                 try {
                     const axiosInstace = createAxiosInstance(url);
-                    const result = yield axiosInstace.request({
+                    cancelTokenSource = axios.CancelToken.source();
+                    const config = {
                         url,
                         method,
                         data: body,
-                        cancelToken: new axios.CancelToken(c => {
-                            // cancel = c;
-                        })
-                    });
+                        cancelToken: cancelTokenSource.token,
+                    };
+                    const result = yield axiosInstace.request(config);
                     setResponse(result.data);
                 }
                 catch (error) {
@@ -135,20 +136,21 @@ const ApiProvider = ({ children }) => {
     const [data, setData] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
+    React.useState(false);
     const startFetching = (urlRequest, methodRequest, bodyRequest) => __awaiter(void 0, void 0, void 0, function* () {
         const { response, loading, error } = useFetch(urlRequest, methodRequest, bodyRequest);
         setData(response);
         setLoading(loading);
         setError(error);
     });
-    const startFetchingIf = (urlRequest, methodRequest, bodyRequest, startFetchingReq) => __awaiter(void 0, void 0, void 0, function* () {
-        const { response, loading, error, startFetching: startFetch } = useFetchIf(urlRequest, methodRequest, bodyRequest, !!startFetchingReq);
-        if (startFetch) {
+    function startFetchingIf(urlRequest_1, methodRequest_1, bodyRequest_1) {
+        return __awaiter(this, arguments, void 0, function* (urlRequest, methodRequest, bodyRequest, startFetchingReq = false) {
+            const { response, loading, error } = useFetchIf(urlRequest, methodRequest, bodyRequest, startFetchingReq);
             setData(response);
             setLoading(loading);
             setError(error);
-        }
-    });
+        });
+    }
     return (React.createElement(ApiContainer.Provider, { value: { startFetching, startFetchingIf } },
         children,
         loading && React.createElement("div", null, "Loading..."),
