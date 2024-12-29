@@ -145,10 +145,12 @@ const ApiProvider = ({ children }) => {
     });
     function startFetchingIf(urlRequest_1, methodRequest_1, bodyRequest_1) {
         return __awaiter(this, arguments, void 0, function* (urlRequest, methodRequest, bodyRequest, startFetchingReq = false) {
-            const { response, loading, error } = useFetchIf(urlRequest, methodRequest, bodyRequest, startFetchingReq);
-            setData(response);
-            setLoading(loading);
-            setError(error);
+            const { response, loading, error } = useFetchIf(urlRequest, methodRequest || "GET", bodyRequest, startFetchingReq);
+            if (startFetchingReq) {
+                setData(response); // Set the fetched data
+                setLoading(loading); // Update loading state
+                setError(error); // Set any errors encountered
+            }
         });
     }
     return (React.createElement(ApiContainer.Provider, { value: { startFetching, startFetchingIf } },
