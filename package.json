@@ -1,6 +1,6 @@
 {
   "name": "startfetch",
-  "version": "5.8.12",
+  "version": "5.9.12",
   "description": "A library for fethcing API calls and their states",
   "main": "index.js",
   "module": "dist/index.esm.js",

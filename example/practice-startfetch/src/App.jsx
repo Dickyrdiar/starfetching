@@ -4,17 +4,23 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { useFetch } from '../../..'
 import { useFetchIf } from '../../..'
 
+
+
 function App() {
-  const [count, setCount] = useState(0)
-  const [startFethching, setStartFetching] = useState(false)
+  const [fetchingButton, setFetchingButton] = useState(false)
   const { response, loading, error } = useFetchIf(
-    "https://sw-api.starnavi.io/planets", 
+    "https://swapi.py4e.com/api/planets",
     "GET",
     null,
-    startFethching,
+    fetchingButton
   )
+
+  const handleClick = () => {
+    setFetchingButton(!fetchingButton)
+  }
 
   console.log("response", response)
 
@@ -34,7 +40,7 @@ function App() {
             </div>
             <h1>Vite + React</h1>
             <div className="card">
-             <button onClick={() => setStartFetching(true)}>click this</button>
+             <button onClick={handleClick}>click this</button>
             </div>
 
             <p className="read-the-docs">
