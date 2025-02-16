@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "startfetch": "^5.8.12"
+    "startfetch": "^5.9.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

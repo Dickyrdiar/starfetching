@@ -43,17 +43,93 @@ const createAxiosInstance = (baseURL) => {
     });
 };
 
+// Cache object to store responses
+const cache$1 = {};
 const useFetch = (url, method, body = null) => {
     const [response, setResponse] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState(null); // Updated error state type
-    React.useEffect(() => {
+    const [error, setError] = React.useState(null);
+    const fetchData = React.useCallback(() => __awaiter(void 0, void 0, void 0, function* () {
         let isMounted = true; // Guard to prevent state updates if unmounted
         let cancelTokenSource;
-        const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
+        setLoading(true);
+        try {
+            // Check if the response is already cached
+            if (cache$1[url]) {
+                if (isMounted) {
+                    setResponse(cache$1[url]);
+                }
+                return;
+            }
+            // Create an axios instance with cancel token
+            const axiosInstance = createAxiosInstance(url);
+            cancelTokenSource = axios.CancelToken.source();
+            const config = {
+                url,
+                method,
+                data: body,
+                cancelToken: cancelTokenSource.token,
+            };
+            const response = yield axiosInstance.request(config);
+            if (isMounted) {
+                setResponse(response.data);
+                // Cache the response
+                cache$1[url] = response.data;
+            }
+        }
+        catch (error) {
+            if (isMounted) {
+                if (axios.isCancel(error)) {
+                    console.log("Request canceled", error.message);
+                }
+                else if (error instanceof Error) {
+                    setError(error.message); // Assign error message
+                }
+                else {
+                    setError("An unknown error occurred."); // Assign default error message
+                }
+            }
+        }
+        finally {
+            if (isMounted)
+                setLoading(false);
+        }
+        // Cleanup function to cancel request and prevent state updates if unmounted
+        return () => {
+            isMounted = false;
+            if (cancelTokenSource) {
+                cancelTokenSource.cancel("Request canceled due to component unmounting.");
+            }
+        };
+    }), [url, method, body]);
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+    // Function to manually re-fetch data
+    const reFetch = React.useCallback(() => {
+        // Invalidate the cache for the URL
+        delete cache$1[url];
+        fetchData();
+    }, [fetchData, url]);
+    return { response, loading, error, reFetch };
+};
+
+const cache = {};
+const useFetchIf = (url, method, body, startFetching) => {
+    const [response, setResponse] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(null);
+    const fetchData = React.useCallback(() => __awaiter(void 0, void 0, void 0, function* () {
+        let isMounted = true;
+        let cancelTokenSource;
+        if (startFetching) {
             setLoading(true);
+            if (cache[url]) {
+                setResponse(cache[url]);
+                setLoading(false);
+                return;
+            }
             try {
-                // Create an axios instance with cancel token
                 const axiosInstance = createAxiosInstance(url);
                 cancelTokenSource = axios.CancelToken.source();
                 const config = {
@@ -62,97 +138,92 @@ const useFetch = (url, method, body = null) => {
                     data: body,
                     cancelToken: cancelTokenSource.token,
                 };
-                const response = yield axiosInstance.request(config);
+                const result = yield axiosInstance.request(config);
                 if (isMounted) {
-                    setResponse(response.data);
+                    setResponse(result.data);
+                    setError(null);
+                    cache[url] = result.data;
                 }
             }
             catch (error) {
-                if (isMounted) {
+                {
                     if (axios.isCancel(error)) {
                         console.log("Request canceled", error.message);
                     }
                     else if (error instanceof Error) {
-                        setError(error.message); // Assign error message
+                        setError(error.message);
                     }
                     else {
-                        setError("An unknown error occurred."); // Assign default error message
+                        setError("An unknown error occurred.");
                     }
                 }
             }
             finally {
-                if (isMounted)
-                    setLoading(false);
+                setLoading(false);
             }
-        });
-        fetchData();
-        // Cleanup function to cancel request and prevent state updates if unmounted
-        return () => {
-            isMounted = false;
-            if (cancelTokenSource) {
-                cancelTokenSource.cancel("Request canceled due to component unmounting.");
-            }
-        };
-    }, [url, method, body]);
-    return { response, loading, error };
-};
-
-const useFetchIf = (url, method, body, startFetching) => {
-    const [response, setResponse] = React.useState(null);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState(null);
-    React.useEffect(() => {
-        let cancelTokenSource;
-        if (startFetching) {
-            setLoading(true);
-            const fetchData = () => __awaiter(void 0, void 0, void 0, function* () {
-                try {
-                    const axiosInstace = createAxiosInstance(url);
-                    cancelTokenSource = axios.CancelToken.source();
-                    const config = {
-                        url,
-                        method,
-                        data: body,
-                        cancelToken: cancelTokenSource.token,
-                    };
-                    const result = yield axiosInstace.request(config);
-                    setResponse(result.data);
-                }
-                catch (error) {
-                    setError(error.message);
-                }
-                finally {
-                    setLoading(false);
-                }
-            });
-            fetchData();
         }
-    }, [url, method, body, startFetching]);
-    return { url, method, body, startFetching, response, loading, error };
+    }), [url, method, body, startFetching]);
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+    const refetch = React.useCallback(() => {
+        delete cache[url];
+        fetchData();
+    }, [fetchData, url]);
+    // useEffect(() => {
+    //   let isMounthed = true;
+    //   let cancelTokenSource: CancelTokenSource;
+    //   if (startFetching) {
+    //     setLoading(true);
+    //     const fetchData = async () => {
+    //       try {
+    //         const axiosInstace = createAxiosInstance(url);
+    //         cancelTokenSource = axios.CancelToken.source();
+    //         const config: AxiosRequestConfig = { 
+    //           url,
+    //           method,
+    //           data: body,
+    //           cancelToken: cancelTokenSource.token,
+    //         }
+    //         const result = await axiosInstace.request<T>(config);
+    //         setResponse(result.data);
+    //       } catch (error: any) {
+    //         setError(error.message);
+    //       } finally {
+    //         if (isMounthed) setLoading(false);
+    //       }
+    //     };
+    //     fetchData();
+    //   }
+    // }, [url, method, body, startFetching]);
+    return { response, loading, error, refetch };
 };
 
 const ApiContainer = React.createContext(undefined);
-const ApiProvider = ({ children }) => {
+const ApiProvider = ({ children, }) => {
     const [data, setData] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
-    React.useState(false);
     const startFetching = (urlRequest, methodRequest, bodyRequest) => __awaiter(void 0, void 0, void 0, function* () {
-        const { response, loading, error } = useFetch(urlRequest, methodRequest, bodyRequest);
+        const { response, loading, error, reFetch } = useFetch(urlRequest, methodRequest, bodyRequest);
+        // Update state based on the hook's response
         setData(response);
         setLoading(loading);
         setError(error);
+        // Call reFetch function for external use
+        reFetch();
     });
-    function startFetchingIf(urlRequest_1, methodRequest_1, bodyRequest_1) {
-        return __awaiter(this, arguments, void 0, function* (urlRequest, methodRequest, bodyRequest, startFetchingReq = false) {
-            const { response, loading, error } = useFetchIf(urlRequest, methodRequest || "GET", bodyRequest, startFetchingReq);
-            if (startFetchingReq) {
-                setData(response); // Set the fetched data
-                setLoading(loading); // Update loading state
-                setError(error); // Set any errors encountered
-            }
-        });
-    }
+    const startFetchingIf = (urlRequest_1, methodRequest_1, bodyRequest_1, ...args_1) => __awaiter(void 0, [urlRequest_1, methodRequest_1, bodyRequest_1, ...args_1], void 0, function* (urlRequest, methodRequest, bodyRequest, startFetchingReq = false) {
+        const { response, loading, error, refetch } = useFetchIf(urlRequest, methodRequest || "GET", bodyRequest, startFetchingReq);
+        // Update state based on the hook's response
+        if (startFetchingReq) {
+            setData(response);
+            setLoading(loading);
+            setError(error);
+        }
+        // Return refetch function for external use
+        refetch();
+    });
     return (React.createElement(ApiContainer.Provider, { value: { startFetching, startFetchingIf } },
         children,
         loading && React.createElement("div", null, "Loading..."),

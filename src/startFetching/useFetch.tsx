@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios, { AxiosRequestConfig, CancelTokenSource } from "axios";
-import {default as createAxiosInstance} from "../instance";
+import { default as createAxiosInstance } from "../instance";
+
+// Cache object to store responses
+const cache: Record<string, any> = {};
 
 export const useFetch = <T,>(
   url: string,
@@ -9,47 +12,53 @@ export const useFetch = <T,>(
 ) => {
   const [response, setResponse] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null); // Updated error state type
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     let isMounted = true; // Guard to prevent state updates if unmounted
     let cancelTokenSource: CancelTokenSource;
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Create an axios instance with cancel token
-        const axiosInstance = createAxiosInstance(url);
-        cancelTokenSource = axios.CancelToken.source();
-
-        const config: AxiosRequestConfig = {
-          url,
-          method,
-          data: body,
-          cancelToken: cancelTokenSource.token,
-        };
-
-        const response = await axiosInstance.request<T>(config);
-
+    setLoading(true);
+    try {
+      // Check if the response is already cached
+      if (cache[url]) {
         if (isMounted) {
-          setResponse(response.data);
+          setResponse(cache[url]);
         }
-      } catch (error: unknown) {
-        if (isMounted) {
-          if (axios.isCancel(error)) {
-            console.log("Request canceled", error.message);
-          } else if (error instanceof Error) {
-            setError(error.message); // Assign error message
-          } else {
-            setError("An unknown error occurred."); // Assign default error message
-          }
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+        return;
       }
-    };
 
-    fetchData();
+      // Create an axios instance with cancel token
+      const axiosInstance = createAxiosInstance(url);
+      cancelTokenSource = axios.CancelToken.source();
+
+      const config: AxiosRequestConfig = {
+        url,
+        method,
+        data: body,
+        cancelToken: cancelTokenSource.token,
+      };
+
+      const response = await axiosInstance.request<T>(config);
+
+      if (isMounted) {
+        setResponse(response.data);
+        // Cache the response
+        cache[url] = response.data;
+      }
+    } catch (error: unknown) {
+      if (isMounted) {
+        if (axios.isCancel(error)) {
+          console.log("Request canceled", error.message);
+        } else if (error instanceof Error) {
+          setError(error.message); // Assign error message
+        } else {
+          setError("An unknown error occurred."); // Assign default error message
+        }
+      }
+    } finally {
+      if (isMounted) setLoading(false);
+    }
 
     // Cleanup function to cancel request and prevent state updates if unmounted
     return () => {
@@ -60,5 +69,16 @@ export const useFetch = <T,>(
     };
   }, [url, method, body]);
 
-  return { response, loading, error };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Function to manually re-fetch data
+  const reFetch = useCallback(() => {
+    // Invalidate the cache for the URL
+    delete cache[url];
+    fetchData();
+  }, [fetchData, url]);
+
+  return { response, loading, error, reFetch };
 };

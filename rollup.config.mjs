@@ -3,7 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 export default {
   input: 'src/index.ts', // Entry file
@@ -27,7 +27,7 @@ export default {
       tsconfig: './tsconfig.json',
       useTsconfigDeclarationDir: true,
     }),
-    json(),
+    json(), // This plugin handles JSON imports
   ],
   external: ['react', 'react-dom', 'axios'], // Ensure axios is marked as external
 };
