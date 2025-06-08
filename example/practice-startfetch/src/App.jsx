@@ -5,8 +5,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { useFetchIf } from '../../..'
-
-
+import { Button } from "@material-tailwind/react";
 
 function App() {
   const [fetchingButton, setFetchingButton] = useState(false)
@@ -27,17 +26,14 @@ function App() {
         <div>loading....</div>
       ) : (
         <div>
-           <div>
-              <a href="https://vite.dev" target="_blank">
-                <img src={viteLogo} className="logo" alt="Vite logo" />
-              </a>
-              <a href="https://react.dev" target="_blank">
-                <img src={reactLogo} className="logo react" alt="React logo" />
-              </a>
-            </div>
-            <h1>Vite + React</h1>
+            <h1>startFetch example documentation</h1>
             <div className="card">
-             <button onClick={handleClick}>click this</button>
+             <Button
+              color='white'
+              onClick={handleClick}
+             >
+              Click this
+             </Button>
             </div>
 
             <p className="read-the-docs">
