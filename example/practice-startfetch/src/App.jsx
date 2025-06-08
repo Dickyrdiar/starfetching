@@ -1,6 +1,6 @@
  
 /* eslint-disable no-unused-vars */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -18,10 +18,8 @@ function App() {
   )
 
   const handleClick = () => {
-    setFetchingButton(!fetchingButton)
-  }
-
-  console.log("response", response)
+    setFetchingButton(prev => !prev);
+  };
 
   return (
     <>
@@ -43,9 +41,9 @@ function App() {
             </div>
 
             <p className="read-the-docs">
-             {response?.results?.map((val) => (
-              <p key={val.id}>{val.name}</p>
-             ))}
+              {response?.results?.map((val) => (
+                <p key={val.id}>{val.name}</p>
+              ))}
             </p>
         </div>
       )}
