@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { apiContextProps } from "../types/apiContextProps";
 import { useFetch } from "../startFetching/useFetch";
 import { useFetchIf } from "../startFetching/useFetchIf";
+import { startCallBack as startCallBackFn } from "../startCallBack/startCallback";
 
 const ApiContainer = createContext<apiContextProps | undefined>(undefined);
 
@@ -64,8 +65,22 @@ export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({
     refetch();
   };
 
+  const startCallBack = async (
+    urlRequest: string,
+    methodRequest?: string
+  ): Promise<void> => {
+    const { response, loading, error } = await startCallBackFn(
+      urlRequest,
+      methodRequest || 'GET'
+    )
+
+    setData(response)
+    setLoading(loading)
+    setError(error)
+  }
+
   return (
-    <ApiContainer.Provider value={{ startFetching, startFetchingIf }}>
+    <ApiContainer.Provider value={{ startFetching, startFetchingIf, startCallBack }}>
       {children}
       {loading && <div>Loading...</div>}
       {error && <div>Error: {error}</div>}

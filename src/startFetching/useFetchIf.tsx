@@ -66,37 +66,5 @@ export const useFetchIf = <T, >(url: string, method: string | undefined, body: a
     fetchData();
   }, [fetchData, url]);
 
-  // useEffect(() => {
-  //   let isMounthed = true;
-  //   let cancelTokenSource: CancelTokenSource;
-
-  //   if (startFetching) {
-  //     setLoading(true);
-
-  //     const fetchData = async () => {
-  //       try {
-  //         const axiosInstace = createAxiosInstance(url);
-  //         cancelTokenSource = axios.CancelToken.source();
-          
-  //         const config: AxiosRequestConfig = { 
-  //           url,
-  //           method,
-  //           data: body,
-  //           cancelToken: cancelTokenSource.token,
-  //         }
-
-  //         const result = await axiosInstace.request<T>(config);
-  //         setResponse(result.data);
-  //       } catch (error: any) {
-  //         setError(error.message);
-  //       } finally {
-  //         if (isMounthed) setLoading(false);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  // }, [url, method, body, startFetching]);
-
   return { response, loading, error, refetch }; 
 };
