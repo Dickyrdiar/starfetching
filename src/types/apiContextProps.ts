@@ -5,4 +5,5 @@ export interface apiContextProps {
   // error: string | null;
   startFetching: (url: string, method?: string, body?: any) => Promise<void>;
   startFetchingIf: (url: string, method?: string, body?: any, startFetching?: boolean) => Promise<void>;
+  startCallBack: (url: string, method?: string) => Promise<void>
 }
