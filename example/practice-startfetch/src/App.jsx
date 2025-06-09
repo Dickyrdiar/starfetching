@@ -1,8 +1,6 @@
  
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { useFetchIf } from '../../..'
 import { Button } from "@material-tailwind/react";
@@ -29,7 +27,7 @@ function App() {
             <h1>startFetch example documentation</h1>
             <div className="card">
              <Button
-              color='white'
+              color='blue'
               onClick={handleClick}
              >
               Click this
