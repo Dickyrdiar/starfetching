@@ -45,7 +45,7 @@ const createAxiosInstance = (baseURL) => {
 
 // Cache object to store responses
 const cache$1 = {};
-const useFetch = (url, method, body = null) => {
+const useFetch = (url, method, body = null, token) => {
     const [response, setResponse] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
@@ -61,7 +61,6 @@ const useFetch = (url, method, body = null) => {
                 }
                 return;
             }
-            // Create an axios instance with cancel token
             const axiosInstance = createAxiosInstance(url);
             cancelTokenSource = axios.CancelToken.source();
             const config = {
@@ -69,6 +68,7 @@ const useFetch = (url, method, body = null) => {
                 method,
                 data: body,
                 cancelToken: cancelTokenSource.token,
+                headers: Object.assign({}, (token ? { Authorization: `Bearer ${token}` } : {})),
             };
             const response = yield axiosInstance.request(config);
             if (isMounted) {
@@ -115,88 +115,97 @@ const useFetch = (url, method, body = null) => {
 };
 
 const cache = {};
-const useFetchIf = (url, method, body, startFetching) => {
+const useFetchIf = (url, method, body, startFetching, token) => {
     const [response, setResponse] = React.useState(null);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState(null);
     const fetchData = React.useCallback(() => __awaiter(void 0, void 0, void 0, function* () {
-        let isMounted = true;
         let cancelTokenSource;
-        if (startFetching) {
-            setLoading(true);
-            if (cache[url]) {
-                setResponse(cache[url]);
-                setLoading(false);
-                return;
+        setLoading(true);
+        if (cache[url]) {
+            setResponse(cache[url]);
+            setLoading(false);
+            return;
+        }
+        try {
+            const axiosInstance = createAxiosInstance(url);
+            cancelTokenSource = axios.CancelToken.source();
+            const config = {
+                url,
+                method,
+                data: body,
+                cancelToken: cancelTokenSource.token,
+                headers: Object.assign({}, (token ? { Authorization: `Bearer ${token}` } : {}))
+            };
+            const result = yield axiosInstance.request(config);
+            setResponse(result.data);
+            setError(null);
+            cache[url] = result.data;
+        }
+        catch (error) {
+            if (axios.isCancel(error)) {
+                console.log("Request canceled", error.message);
             }
-            try {
-                const axiosInstance = createAxiosInstance(url);
-                cancelTokenSource = axios.CancelToken.source();
-                const config = {
-                    url,
-                    method,
-                    data: body,
-                    cancelToken: cancelTokenSource.token,
-                };
-                const result = yield axiosInstance.request(config);
-                if (isMounted) {
-                    setResponse(result.data);
-                    setError(null);
-                    cache[url] = result.data;
-                }
+            else if (error instanceof Error) {
+                setError(error.message);
             }
-            catch (error) {
-                {
-                    if (axios.isCancel(error)) {
-                        console.log("Request canceled", error.message);
-                    }
-                    else if (error instanceof Error) {
-                        setError(error.message);
-                    }
-                    else {
-                        setError("An unknown error occurred.");
-                    }
-                }
-            }
-            finally {
-                setLoading(false);
+            else {
+                setError("An unknown error occurred.");
             }
         }
-    }), [url, method, body, startFetching]);
+        finally {
+            setLoading(false);
+        }
+    }), [url, method, body, token]);
     React.useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+        if (startFetching) {
+            fetchData();
+        }
+    }, [fetchData, startFetching]);
     const refetch = React.useCallback(() => {
         delete cache[url];
         fetchData();
     }, [fetchData, url]);
-    // useEffect(() => {
-    //   let isMounthed = true;
-    //   let cancelTokenSource: CancelTokenSource;
-    //   if (startFetching) {
-    //     setLoading(true);
-    //     const fetchData = async () => {
-    //       try {
-    //         const axiosInstace = createAxiosInstance(url);
-    //         cancelTokenSource = axios.CancelToken.source();
-    //         const config: AxiosRequestConfig = { 
-    //           url,
-    //           method,
-    //           data: body,
-    //           cancelToken: cancelTokenSource.token,
-    //         }
-    //         const result = await axiosInstace.request<T>(config);
-    //         setResponse(result.data);
-    //       } catch (error: any) {
-    //         setError(error.message);
-    //       } finally {
-    //         if (isMounthed) setLoading(false);
-    //       }
-    //     };
-    //     fetchData();
-    //   }
-    // }, [url, method, body, startFetching]);
     return { response, loading, error, refetch };
+};
+
+const startCallBack = (method, url) => {
+    const [response, setResponse] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(null);
+    const fetchData = React.useCallback(() => __awaiter(void 0, void 0, void 0, function* () {
+        let cancelTokenSource;
+        setLoading(true);
+        try {
+            const axiosInstace = createAxiosInstance(url);
+            cancelTokenSource = axios.CancelToken.source();
+            const config = {
+                method,
+                url,
+                cancelToken: cancelTokenSource.token
+            };
+            const response = yield axiosInstace.request(config);
+            setResponse(response === null || response === void 0 ? void 0 : response.data);
+        }
+        catch (err) {
+            if (axios.isCancel(err)) {
+                console.log("Request candeled", err.message);
+            }
+            else if (err instanceof Error) {
+                setError(err.message);
+            }
+            else {
+                setError("An unknown error occurred.");
+            }
+        }
+        finally {
+            setLoading(false);
+        }
+    }), [url, method]);
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+    return { response, loading, error };
 };
 
 const ApiContainer = React.createContext(undefined);
@@ -224,7 +233,13 @@ const ApiProvider = ({ children, }) => {
         // Return refetch function for external use
         refetch();
     });
-    return (React.createElement(ApiContainer.Provider, { value: { startFetching, startFetchingIf } },
+    const startCallBack$1 = (urlRequest, methodRequest) => __awaiter(void 0, void 0, void 0, function* () {
+        const { response, loading, error } = yield startCallBack(urlRequest, methodRequest || 'GET');
+        setData(response);
+        setLoading(loading);
+        setError(error);
+    });
+    return (React.createElement(ApiContainer.Provider, { value: { startFetching, startFetchingIf, startCallBack: startCallBack$1 } },
         children,
         loading && React.createElement("div", null, "Loading..."),
         error && React.createElement("div", null,
@@ -243,7 +258,9 @@ const WrappingComponent = ({ children }) => {
 const library = {
     useFetch,
     useFetchIf,
-    WrappingComponent
+    startCallBack,
+    WrappingComponent,
+    createAxiosInstance
 };
 
 exports.WrappingComponent = WrappingComponent;

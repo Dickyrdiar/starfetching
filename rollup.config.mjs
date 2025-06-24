@@ -3,10 +3,13 @@ import commonjs from '@rollup/plugin-commonjs';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import typescript from 'rollup-plugin-typescript2';
 import json from '@rollup/plugin-json';
-import pkg from './package.json' with { type: 'json' };
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 export default {
-  input: 'src/index.ts', // Entry file
+  input: 'src/index.ts',
   output: [
     {
       file: pkg.main,
@@ -21,13 +24,15 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
+    commonjs({
+      include: /node_modules/,
+    }),
     resolve(),
-    commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
       useTsconfigDeclarationDir: true,
     }),
-    json(), // This plugin handles JSON imports
+    json(),
   ],
-  external: ['react', 'react-dom', 'axios'], // Ensure axios is marked as external
+  external: ['react', 'react-dom', 'axios'],
 };

@@ -8,7 +8,8 @@ const cache: Record<string, any> = {};
 export const useFetch = <T,>(
   url: string,
   method: string | undefined,
-  body: any = null
+  body: any = null,
+  token?:string
 ) => {
   const [response, setResponse] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,7 +29,6 @@ export const useFetch = <T,>(
         return;
       }
 
-      // Create an axios instance with cancel token
       const axiosInstance = createAxiosInstance(url);
       cancelTokenSource = axios.CancelToken.source();
 
@@ -37,6 +37,9 @@ export const useFetch = <T,>(
         method,
         data: body,
         cancelToken: cancelTokenSource.token,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
       };
 
       const response = await axiosInstance.request<T>(config);
